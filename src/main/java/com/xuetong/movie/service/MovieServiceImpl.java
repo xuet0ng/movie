@@ -1,5 +1,6 @@
 package com.xuetong.movie.service;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,25 +14,25 @@ import com.xuetong.movie.domain.Movie;
 import com.xuetong.movie.domain.MovieFilmedRecord;
 
 @Component
-public class MovieServiceImpl implements MovieService{
+public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private FilmLocationDao filmLocationDao;
 
     @Override
-    public Set<Movie> getMovieByTitle(String title) {
+    public Set<Movie> getMovieByTitle(String title) throws SQLException {
         List<FilmLocation> filmLocations = filmLocationDao.getFilmLocationByMovieTitle(title);
         return this.locationToMovie(filmLocations);
     }
 
     @Override
-    public Set<Movie> getMovieByTitleFuzzy(String title) {
+    public Set<Movie> getMovieByTitleFuzzy(String title) throws SQLException {
         List<FilmLocation> filmLocations = filmLocationDao.getFilmLocationsByMovieTitleFuzzy(title);
         return this.locationToMovie(filmLocations);
     }
 
     @Override
-    public Set<MovieFilmedRecord> getMovieFilmedRecord(String title) {
+    public Set<MovieFilmedRecord> getMovieFilmedRecord(String title) throws SQLException {
         List<FilmLocation> filmLocations = filmLocationDao.getFilmLocationByMovieTitle(title);
         return this.locationToMovieFilmedRecord(filmLocations);
     }

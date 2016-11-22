@@ -1,9 +1,11 @@
 package com.xuetong.movie.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
@@ -19,14 +21,14 @@ public class FilmLocationDaoImpl implements FilmLocationDao{
     private RestTemplate restTemplate = new RestTemplate();
     
     @Override
-    public List<FilmLocation> getFilmLocationByMovieTitle(String title) {
+    public List<FilmLocation> getFilmLocationByMovieTitle(String title) throws SQLException {
         String query = "?title=" + title;
         String url = this.sodaBaseUrl + query;
         return this.queryFilmLocations(url);
     }
     
     @Override
-    public List<FilmLocation> getFilmLocationsByMovieTitleFuzzy(String title) {
+    public List<FilmLocation> getFilmLocationsByMovieTitleFuzzy(String title) throws SQLException {
         String query = "?$where=title like '" + title + "%'";
         String url = this.sodaBaseUrl + query;
         return this.queryFilmLocations(url);
@@ -34,12 +36,16 @@ public class FilmLocationDaoImpl implements FilmLocationDao{
     }
     
     @Override
-    public List<FilmLocation> findAllFilmLocations() {
+    public List<FilmLocation> findAllFilmLocations() throws SQLException {
         return this.queryFilmLocations(this.sodaBaseUrl);
     }
     
-    private List<FilmLocation> queryFilmLocations(String url) {
-        String context = restTemplate.getForObject(url, String.class);
-        return JSONObject.parseArray(context, FilmLocation.class);
+    private List<FilmLocation> queryFilmLocations(String url) throws SQLException {
+        try {
+            String context = restTemplate.getForObject(url, String.class);
+            return JSONObject.parseArray(context, FilmLocation.class);
+        } catch (RestClientException ex) {
+            throw new SQLException("Can not access db");
+        }
     }
 }

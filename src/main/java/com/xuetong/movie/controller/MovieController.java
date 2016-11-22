@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,17 @@ public class MovieController {
     private MovieService movieService;
     
     @RequestMapping(value = "/movies/{title}", method = RequestMethod.GET)
-    public Set<Movie> getMovie(
+    public Set<Movie> getMovie (
             @PathVariable String title, 
-            @RequestParam(required=false) String fuzzy) 
+            @RequestParam(required=false) String fuzzy) throws SQLException
     {
-        if (fuzzy.equals("yes"))
+        if (fuzzy != null && fuzzy.equals("yes"))
             return movieService.getMovieByTitleFuzzy(title);
         return movieService.getMovieByTitle(title);
     }
     
     @RequestMapping(value = "/movies/{title}/filmedRecord", method = RequestMethod.GET)
-    public Set<MovieFilmedRecord> getMovieFilmedRecord(@PathVariable String title) {
+    public Set<MovieFilmedRecord> getMovieFilmedRecord(@PathVariable String title) throws SQLException {
         return movieService.getMovieFilmedRecord(title);
     }
 }
