@@ -3,6 +3,8 @@ package com.xuetong.movie.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -11,9 +13,10 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONObject;
 import com.xuetong.movie.domain.FilmLocation;
 
-
 @Component
 public class FilmLocationDaoImpl implements FilmLocationDao{
+    
+    private static final Logger logger = LoggerFactory.getLogger(FilmLocationDao.class);
 
     @Value("${soda.url}")
     private String sodaBaseUrl;
@@ -45,6 +48,8 @@ public class FilmLocationDaoImpl implements FilmLocationDao{
             String context = restTemplate.getForObject(url, String.class);
             return JSONObject.parseArray(context, FilmLocation.class);
         } catch (RestClientException ex) {
+            logger.error(ex.toString());
+            logger.error(ex.getMessage());
             throw new SQLException("Can not access db");
         }
     }

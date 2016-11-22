@@ -25,7 +25,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = SQLException.class)
     public @ResponseBody 
     ErrorInfo ExceptionHandler(HttpServletRequest request, Exception ex) {
-        
+        //TODO: put trace into the logger.debug
+        logger.error(ex.toString());
+        logger.error(ex.getMessage());
         return new ErrorInfo(request.getRequestURL().toString(), ex);
     }
 }
